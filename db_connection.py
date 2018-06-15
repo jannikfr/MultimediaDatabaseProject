@@ -1,4 +1,5 @@
 # !/usr/bin/python
+import json
 from configparser import ConfigParser
 import psycopg2
 
@@ -27,6 +28,7 @@ def close_connection(conn):
     :param conn: Connection object
     """
     conn.close()
+    print("Disconnected from database.")
 
 
 def config(filename='database.ini', section='postgresql'):
@@ -60,16 +62,35 @@ def write_image_to_database(conn, image):
     :param image: image object, whose features need to be stored in the database
     """
 
-    sql = """INSERT INTO mmdbs_image(path, classification) VALUES(%s, %s) """
+    sql = """INSERT INTO mmdbs_image(path, classification, local_histogram, global_histogram) VALUES(%s, %s) """
 
     try:
         # Create a new cursor
         cur = conn.cursor()
         # Execute the INSERT statement
-        cur.execute(sql, (image.path, image.classification,))
+        cur.execute(sql, (
+        image.path, image.classification, json.dumps(image.local_histogram), json.dumps(image.global_histogram),))
         # Commit the changes to the database
         conn.commit()
+
+        print("Saved image " + image.path + " to database.")
+
         # Close communication with the database
         cur.close()
     except (Exception, psycopg2.DatabaseError) as error:
-            print(error)
+        print(error)
+
+
+def get_image(conn):
+    sql = """SELECT path FROM mmdbs_image LIMIT 1"""
+
+    try:
+        # Create a new cursor
+        cur = conn.cursor()
+        # Execute the SELECT statement
+        cur.execute(sql)
+        # Close communication with the database
+        cur.close()
+        return cur.fetchall()
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)

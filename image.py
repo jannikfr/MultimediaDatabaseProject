@@ -7,3 +7,5 @@ class Image:
         self.classification = ""
         self.image = numpy.empty
         self.path = ""
+        self.local_histogram = {}
+        self.global_histogram = {}
