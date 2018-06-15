@@ -1,31 +1,75 @@
-import json
-
+# !/usr/bin/python
+from configparser import ConfigParser
 import psycopg2
 
 
-class DBConnection(object):
+def connect():
+    """
+    Create a connection to the PostgreSQL database.
+    :return: Connection object
+    """
 
-    def __init__(self):
-        with open("config.json") as file_data:
-            credentials = json.load(file_data)
-        self.conn = psycopg2.connect(host=credentials['host'], user=credentials['user'],
-                                     password=credentials['password'], database=credentials['db'],
-                                     port=credentials['port'])
+    try:
+        # read database configuration
+        params = config()
+        # connect to the PostgreSQL database
+        conn = psycopg2.connect(**params)
+        print("Connected to database.")
+        return conn
 
-    def write_image_to_database(self, image):
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
 
-        """ insert a new image into the mmdbs_image table """
-        sql = """INSERT INTO mmdbs_image(path, classification) VALUES(%s, %s) """
 
-        try:
+def close_connection(conn):
+    """
+    Close database connection.
+    :param conn: Connection object
+    """
+    conn.close()
 
-            # create a new cursor
-            cur = self.conn.cursor()
-            # execute the INSERT statement
-            cur.execute(sql, (image.path, image.classification,))
-            # commit the changes to the database
-            self.conn.commit()
-            # close communication with the database
-            cur.close()
-        except (Exception, psycopg2.DatabaseError) as error:
+
+def config(filename='database.ini', section='postgresql'):
+    """
+    Read the .ini containing the database credentials and store them in a dictionary.
+    :param filename: file name of the configuration .ini
+    :param section: corresponding section of the .ini
+    :return: Dictionary containing the database credentials
+    """
+    # Create a parser
+    parser = ConfigParser()
+    # Read config file
+    parser.read(filename)
+
+    # Get section
+    db = {}
+    if parser.has_section(section):
+        params = parser.items(section)
+        for param in params:
+            db[param[0]] = param[1]
+    else:
+        raise Exception('Section {0} not found in the {1} file'.format(section, filename))
+
+    return db
+
+
+def write_image_to_database(conn, image):
+    """
+    Inserts the image's features to the database.
+    :param conn: connection object to access the database
+    :param image: image object, whose features need to be stored in the database
+    """
+
+    sql = """INSERT INTO mmdbs_image(path, classification) VALUES(%s, %s) """
+
+    try:
+        # Create a new cursor
+        cur = conn.cursor()
+        # Execute the INSERT statement
+        cur.execute(sql, (image.path, image.classification,))
+        # Commit the changes to the database
+        conn.commit()
+        # Close communication with the database
+        cur.close()
+    except (Exception, psycopg2.DatabaseError) as error:
             print(error)
