@@ -54,14 +54,17 @@ def extract_histograms(image_param, h_splits, v_splits, number_of_bins, show_cel
                 elif z == 2:
                     v = int(value / (256 / number_of_bins[z]))
 
+                    # Build String key in dictionary since needs a String for saving into db
+                    key = str(h) + "," + str(s) + "," + str(v)
+
                     # All values for this pixel are processed
                     # Build key to compute new binned HSV value
                     # Increase the counter for this HSV value if exists
-                    if (h, s, v) in cell_histogram:
-                        cell_histogram[h, s, v] = cell_histogram[h, s, v] + 1
+                    if key in cell_histogram:
+                        cell_histogram[key] = cell_histogram[key] + 1
                     # HSV value does not exist yet => create it and set counter to 1
                     else:
-                        cell_histogram[h, s, v] = 1
+                        cell_histogram[key] = 1
 
                     # Reset variables
                     h = 0
