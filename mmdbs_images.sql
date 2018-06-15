@@ -1,5 +1,5 @@
 -- auto-generated definition
-create table features
+create table mmdbs_image
 (
   id                    serial       not null
     constraint features_pkey
