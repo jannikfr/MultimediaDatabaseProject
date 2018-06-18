@@ -52,8 +52,9 @@ if refresh_db:
                     temp_image.sobel_edge_detection, 1, 1, 64, False, np.min(temp_image.sobel_edge_detection),
                     np.max(temp_image.sobel_edge_detection))
 
-                cv2.imwrite(image, temp_image.sobel_edge_detection)
-                print(temp_image.global_edge_histogram)
+                # See outputs
+                # cv2.imwrite(image, temp_image.sobel_edge_detection)
+                # print(temp_image.global_edge_histogram)
 
                 # Write the features of the Image object to the database
                 db_connection.write_image_to_database(conn, temp_image)
