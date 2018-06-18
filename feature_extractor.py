@@ -81,29 +81,46 @@ def extract_histograms(image_param, h_splits, v_splits, number_of_bins, show_cel
 
 
 def sobel_edge_detection(image_param):
+    """
+    Converts an image to greyscale and detects edges with Sobel filters.
+    :param image_param: Image whose edges needs to be detected.
+    :return: Numpy array containing the calculated edges. Array does not have a fixed value range.
+    """
+    # Convert image to greyscale
     input_image = cv2.cvtColor(image_param, cv2.COLOR_BGR2GRAY)
 
+    # Define the basic kernel
     kernel = np.array([[1, 2, 1], [0, 0, 0], [-1, -2, - 1]], dtype=np.float)
 
+    # Assign kernels for vertical and horizontal edge detection.
+    # The kernel for horizontal edge detection is equal to the transposed kernel for vertical edge detection.
     v_kernel = kernel
     h_kernel = np.transpose(kernel)
 
-    N = input_image.shape[0]  # row
-    M = input_image.shape[1]  # column
+    # Retrieve the image's dimensions
+    N = input_image.shape[0]
+    M = input_image.shape[1]
 
+    # Create an empty numpy array as the output
     output = np.zeros((N, M))
 
-    # Surrounds array with 0's on the outside perimeter
+    # Create a additional border of zeros around the input_image
+    # Needed for the convolution algorithm
     input_image = np.pad(input_image, pad_width=1, mode='constant', constant_values=0)
 
+    # Loop over rows
     for i in range(1, N - 1):
+        # Loop over columns
         for j in range(1, M - 1):
+
+            # Get a 3 to 3 image of the input for the convolution
             sub_input = input_image[(i - 1):(i + 2), (j - 1):(j + 2)]
 
+            # Calcuate the horizontal and the vertical gradient corresponding to the convolution algorithm
             h_gradient = np.sum(np.multiply(sub_input, h_kernel))
             v_gradient = np.sum(np.multiply(sub_input, v_kernel))
 
-            # Calculate the gradient magnitude
+            # Compute the direction of the edge
             output[i - 1][j - 1] = math.sqrt(h_gradient * h_gradient + v_gradient * v_gradient)
 
     return output
