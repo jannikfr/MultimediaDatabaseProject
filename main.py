@@ -58,6 +58,5 @@ if refresh_db:
                 # Write the features of the Image object to the database
                 db_connection.write_image_to_database(conn, temp_image)
 
-
 # Close database connection
 db_connection.close_connection(conn)

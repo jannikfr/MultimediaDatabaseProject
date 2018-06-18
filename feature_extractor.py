@@ -112,7 +112,6 @@ def sobel_edge_detection(image_param):
     for i in range(1, N - 1):
         # Loop over columns
         for j in range(1, M - 1):
-
             # Get a 3 to 3 image of the input for the convolution
             sub_input = input_image[(i - 1):(i + 2), (j - 1):(j + 2)]
 
