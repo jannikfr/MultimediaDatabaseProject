@@ -22,6 +22,12 @@ conn = db_connection.connect()
 # Loop trough all subdirectories of the given path if refresh = TRUE
 # The name of each subdirectory represents the class of the images inside
 if refresh_db:
+
+    # Clean up database.
+    print("Clean up database.")
+    number_of_deleted_images = db_connection.delete_all_images(conn)
+    print(str(number_of_deleted_images) + " images deleted in database.")
+
     for subdirectory in os.listdir(path):
 
         # Build absolute subdirectory path

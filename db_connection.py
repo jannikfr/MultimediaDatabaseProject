@@ -98,3 +98,28 @@ def get_image(conn):
         return cur.fetchall()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
+
+
+def delete_all_images(conn):
+    """
+    Deletes all image records in mmdbs_image.
+    :param conn: Connection object to access the database.
+    :return: The number of deleted records.
+    """
+
+    rows_deleted = 0
+    try:
+        # Create a new cursor
+        cur = conn.cursor()
+        # Execute the UPDATE  statement
+        cur.execute("DELETE FROM mmdbs_image")
+        # Get the number of updated rows
+        rows_deleted = cur.rowcount
+        # Commit the changes to the database
+        conn.commit()
+        # Close communication with the PostgreSQL database
+        cur.close()
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+
+    return rows_deleted
