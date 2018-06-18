@@ -26,11 +26,11 @@ def extract_histograms(image_param, h_splits, v_splits, number_of_bins, show_cel
     histogram['cell_histograms'] = []
 
     # Split along horizontal axis
-    horizontal_split_images = np.split(image_param, h_splits, axis=0)
+    horizontal_split_images = np.array_split(image_param, h_splits, axis=0)
     for hor_index, horizontal_split_image in enumerate(horizontal_split_images):
 
         # Loop over split sub images and split each along vertical axis
-        horizontal_vertical_split_images = np.split(horizontal_split_image, v_splits, axis=1)
+        horizontal_vertical_split_images = np.array_split(horizontal_split_image, v_splits, axis=1)
         for ver_index, horizontal_vertical_split_image in enumerate(horizontal_vertical_split_images):
 
             # Display the cells if desired in parameter
