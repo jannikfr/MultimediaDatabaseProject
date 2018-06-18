@@ -1,6 +1,6 @@
 import collections
 import math
-import numpy
+import numpy as np
 
 import cv2
 import os
@@ -42,8 +42,18 @@ if refresh_db:
                 temp_image.image = cv2.cvtColor(cv2.imread(image_path), cv2.COLOR_BGR2HSV)
                 # temp_image.image = cv2.normalize(temp_image.image, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX)
 
-                temp_image.local_histogram = feature_extractor.extract_histograms(temp_image, 1, 1, [8, 2, 4], False)
-                temp_image.global_histogram = feature_extractor.extract_histograms(temp_image, 1, 1, [8, 2, 4], False)
+                temp_image.local_histogram = feature_extractor.extract_histograms(temp_image.image, 1, 2, [8, 2, 4],
+                                                                                  False)
+                temp_image.global_histogram = feature_extractor.extract_histograms(temp_image.image, 1, 1, [8, 2, 4],
+                                                                                   False)
+
+                temp_image.sobel_edge_detection = feature_extractor.sobel_edge_detection(temp_image.image)
+                temp_image.global_edge_histogram = feature_extractor.extract_histograms_greyscale(
+                    temp_image.sobel_edge_detection, 1, 1, 64, False, np.min(temp_image.sobel_edge_detection),
+                    np.max(temp_image.sobel_edge_detection))
+
+                cv2.imwrite(image, temp_image.sobel_edge_detection)
+                print(temp_image.global_edge_histogram)
 
                 # Write the features of the Image object to the database
                 db_connection.write_image_to_database(conn, temp_image)
