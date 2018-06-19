@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MMDBS Project</title>
+</head>
+
+
+<body>
+
+ <form action = "http://localhost:5000/einlesen" method = "POST">
+         <p>Anzahl Einträge: {{ picanz }}  </p>
+
+      </form>
+
+
+<form enctype=multipart/form-data action = "http://localhost:5000/do_db_search" method = "POST">
+         <p>Feature Method <input type = "text" name = "feature" value={{ feat }}  /></p>
+         <p>Similarity Method <input type = "text" name = "similarity" value={{ sim }}  /></p>
+         <p>Number of Eigenvalues <input type = "text" name = "numberEigenvalues" value={{ eigenanz }} /></p>
+         <p>Du hast für Feature Method: {{ feat }} eingegeben </p>
+         <p><input type = "submit" value = "Anwenden" /></p>
+      </form>
+</body>
+</html>
