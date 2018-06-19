@@ -1,3 +1,5 @@
 .idea/
 database.ini
 mmdbs.json
+source/
+venv/
